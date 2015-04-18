@@ -1,12 +1,11 @@
 //dependencias de la aplicacion
+require('./servidor/modelos/mensaje');
 var express       = require("express"),
-	redis         = require("./servidor/conexion/conexion.js"),
     app           = express(),
-    server        = require('http').Server(app),
+    server        = require('http').createServer(app),
     bodyParser    = require('body-parser'),
-    controlador_1 = require('./servidor/controladores/controladores.js'),
+    controller   = require('./servidor/controladores/controladores.js'),
     io            = require('socket.io').listen(server);  
-
 
 
 app.use(bodyParser.urlencoded({ 
@@ -19,14 +18,26 @@ app.get('/', function (req, res){
 	res.sendFile(__dirname + '/cliente/vistas/index.html');
 });
 
-//app.post('/hola', controlador_1.create);
-//app.get('/hola2', controlador_1.list);
 app.use('/', express.static(__dirname + '/cliente/'));
 
 server.listen(3000, function (){
-	console.log('Escuchando en el puerto 3000...');
+	console.log('Listening in port 3000...');
 })
 
-io.on('connection', function (socket) {
-	socket.on('sendMsj', controlador_1.create);
+//manejo de los clientes y sus peticiones
+io.sockets.on('connection', function (socket){
+	console.log('Now are Connected');
+	socket.on('CONNECT', function(data){
+		var message = data;
+        if (message.msgType == 'saveUser'){
+            controller.saveUser(socket, message);
+        }
+        if (message.msgType == 'getUser'){
+           controller.getUser(socket, message);
+        }
+	});
+	
+	socket.on('disconnect', function(code, reason){
+		console.log('Now are disconnect');
+	});	
 });

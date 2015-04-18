@@ -1,21 +1,48 @@
+'use strict';
 app.factory('socket', function(){
 	var socket = io.connect('http://localhost:3000');
 	return socket;
 });
 
 
-app.controller('controlador_1', ['$scope', '$http', 'socket', function ($scope, $http, socket){
-	$scope.prueba = [
-		{usuario: "usuario default"}
-	],
-		
-	$scope.funcion_1 = function(){
-		var temp ={};
-		temp.msj = $scope.modelo_1.text;
+app.controller('controlador_1', ['$scope', '$http', 'socket', function ($scope, $http, $socket){
+	$scope.prueba = [{usuario: 'carlos'}];
 
-		socket.emit('sendMsj', $scope.modelo_1.text);
+	$scope.funcion_1 = function(){
+		var mensaje={};
+		mensaje.msg= 'noexiste';
+		mensaje.msgType= 'getUser';
+		$socket.emit('CONNECT', mensaje);
+
+		$socket.on('Msj', function(res){
+        	console.log(res);
+          
+        	$scope.prueba.push({usuario: res.msg});
+        });
+		//$scope.connect();
+
+	//	$scope.prueba.push({usuario: 'tata'});
+      
+		
+		//$scope.prueba = ' ';
+        //$scope.password = ' ';
+
+		//console.log($scope.modelo_2.text);
 		//socket.emit('sendMsj', JSON.stringif({usuario: $scope.modelo_1.text});
-        $scope.modelo_1 = ' ';
+      
+
+       // socket.send("setMsj", JSON.stringify({usuario: $scope.modelo_1.text}));
+       /*
+        $socket.on('getMsj', function(res){
+        	valor= res;
+        	alert(res);
+          
+        	//$scope.prueba.push({usuario: res});
+        })
+        $scope.prueba.push({usuario: valor});
+        */
+
+
 
 /*
 			.success(function(res){
@@ -25,12 +52,17 @@ app.controller('controlador_1', ['$scope', '$http', 'socket', function ($scope, 
 */
 		    //console.log($scope.modelo_1);
 		    /*
-			$http.post('hola', $scope.modelo_1).success(function(res){
+			$http.post('/crear', $scope.modelo_1.text).success(function(res){
 				//$scope.obtener();
 					console.log(res);
 					$scope.modelo_1= '';
 					//$scope.prueba.name= res;
 					$scope.prueba.push({name : res});
 			});*/
+	};
+
+	$scope.funcion_2 = function(){
+
 	}		
  }]);
+

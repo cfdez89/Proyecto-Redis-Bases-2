@@ -1,14 +1,13 @@
 var nohm = require('nohm').Nohm;
   
 module.exports = nohm.model('User', {
-    properties: {
-      usuario: {
+    properties:{
+    	username:{
         type: 'string',
         unique: true
       },
       password: {
-        type: 'string',
-        unique: true,
+        type: 'string'
       }
     }
 });

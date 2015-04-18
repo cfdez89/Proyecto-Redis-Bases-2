@@ -1,75 +1,66 @@
-var nohm = require('nohm').Nohm;
-var User = require('../modelos/modelos');
-var redis = require('redis').createClient();
-
-
-module.exports.create = function(req, res){
-   console.log(req);
-  //var mensaje = req.body.text;
-   nohm.setClient(redis);
-   var user = nohm.factory('User');
-   user.p({
-    usuario: req,
-    password: 'req@example.com'
-   });
-
-   user.save(function(err){
-      if (err === 'invalid'){
-         console.log('properties were invalid: ', user.errors);
-      } 
-      else if(err){
-         console.log(err); // database or unknown error
-      } 
-      else{
-      console.log('saved user! :-)');
-      }
-   });
-
+var nohm   = require('nohm').Nohm,
+	user   = require('../modelos/modelos'),
+	config = require('../conexion/conexion'),
+    redis  = require('redis').createClient(config.port, config.host);
 
 
 /*
+	*Save new user into database
+*/
+module.exports.saveUser = function(socket, message){
+	nohm.setClient(redis);
+	var user = nohm.factory('User');
+	user.p({ username: message.msg, password: message.msg});//falta agregar la propiedad password al objeto
 
- user.findAndLoad({name: req.body.text}, function(err, users) {
-        if (err) {
-          console.dir(err);
-          t.done();
-        }
-       console.log(users);
-
-      });*/
-
- //res.send('llego');
-
-
-/*
-  user.load("i8icw2v857duzz7wf15o", function (err, properties) {
-  if (err) {
-    // err may be a redis error or "not found" if the id was not found in the db.
-  } else {
-    console.log(properties);
-    // you could use this.allProperties() instead, which also gives you the 'id' property
-  }
-});
- /*var otherUser = nohm.factory('User', "i8icw2v857duzz7wf15o", function (err) {
-    if (err === 'not found') {
-      console.log('no user with id 522 found :-(');
-    } else if (err) {
-      console.log(err); // database or unknown error
-    } else {
-      console.log(otherUser.allProperties());
-    }
-  });*/
-  /*
-user.find(function (err, ids) {
-    // ids = array of ids
-    console.log(ids);
-  });
-  nohm.connect([{
-  model: User,
-  blacklist: ['salt']
-}]);*/
+	user.save(function(err){
+	    if(err === 'invalid'){
+	    	console.log('Properties were invalid: ', user.errors);
+	    } 
+	    else if(err){
+	        console.log(err); 
+	    } 
+	    else{
+	      	console.log('Saved user into redis database!');
+	      	socket.emit('sendMsj', message);//se manda lo enviado del front como prueba, se debe hacer un case en el front
+	    }
+	});
 };
+/*
+	*Get user from database
+*/
+module.exports.getUser = function(socket, message){
+	nohm.setClient(redis);
+	user.find(function(err, ids){
+    if(err){
+    	return next(err);
+    }
+    var users = [];
+    var len = ids.length;
+    var count = 0;
+    if(len === 0){
+      console.log(len);
+    }
+    ids.forEach(function(id){
+    var userFind = nohm.factory('User');
+    userFind.load(id, function(err, props){
+	    if(err){
+	        return next(err);
+	    }
+	    if(props.password === message.msg){//aca se pregunta por el username, esta asi xq mi base esta sucia 
+	        users.push({id: this.id, username: props.username, password: props.password});
+	    }  
+	    if(++count === len){
+	    	if(users.length !== 0){
+	    		console.log(users);	
+	    	}
+	        else{
+	        	console.log('Is not exists in database');
+	        }
+	        //socket.emit('sendMsj', users);// se debe hacer el case en el front para poder enviarlo
+    	}
+      });
+    });
+  });
 
-module.exports.list = function (req, res) {
-  	
+
 };
