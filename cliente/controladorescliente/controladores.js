@@ -10,7 +10,7 @@ app.controller('controlador_1', ['$scope', '$http', 'socket', function ($scope, 
 
 	$scope.funcion_1 = function(){
 		var mensaje={};
-		mensaje.msg= 'noexiste';
+		mensaje.msg= 'jesus';
 		mensaje.msgType= 'getUser';
 		$socket.emit('CONNECT', mensaje);
 
