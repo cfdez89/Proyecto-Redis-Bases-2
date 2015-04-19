@@ -1,4 +1,4 @@
 
 
 
-var app = angular.module('pruebaApp', ['ngResource'])
+var app = angular.module('mensajeApp', ['ngResource'])

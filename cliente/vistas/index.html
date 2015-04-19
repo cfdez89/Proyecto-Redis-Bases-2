@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app=pruebaApp>
+<html ng-app=mensajeApp>
 	<head>
 	  <title>Demo</title>
 	  <meta charset="utf-8">
@@ -8,20 +8,23 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
-		<!--Vista de prueba-->
-		<div ng-controller="controlador_1 as ctl">
-	  		<h1>La prueba {{prueba.length}}</h1>
-	  		<ul>
-		  		<li ng-repeat="p in prueba">{{p.usuario}}</li>
-	  		</ul>
-	  		<form ng-submit="funcion_1()">
-	  			<input type="text" placeholder="User" ng-model="pruebaUsuario.usuario"></input>
-	  			<input type="password" placeholder="Password" ng-model="prueba.password"></input>
+		<!--Vista de registro-->
+		<div ng-controller="ctlMensajes">
+	  		<h1>Registrarse:</h1>
+	  		<form ng-submit="enviarMensaje()">
+	  			<input type="text" placeholder="User" ng-model="mensaje"></input>
+	  			<input type="password" placeholder="Password" ng-model="password"></input>
 	  			<button type="submit">Agregar</button>
 	  		</form>
-	  		<form ng-submit="funcion_2()">
-	  			<button type="submit">mostrar</button>
+	  		<h1>Digite el nombre del mae a buscar</h1>
+	  		<input type="text" placeholder="Buscar" ng-model="buscar"></input>
+	  		<form ng-submit="getMensaje()">
+	  			<button type="submit">Listar Usuarios</button>
 	  		</form>
+	  		<h1>Lista de Buscados: {{mensajes.length}}</h1>
+	  		<ul>
+		  		<li ng-repeat="mensaje in mensajes">{{mensaje.username}}</li>
+	  		</ul>
 	    </div>
 	 
 	    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.js"></script>

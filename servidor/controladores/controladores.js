@@ -5,7 +5,7 @@ var user       = require('../modelos/modelos'),
 */
 module.exports.addUser = function(socket, message){
 	var user   = message.msg;
-	var pass   = message.msg;//falta agregar propiedad en el objeto
+	var pass   = message.msg2;
 	dataAccess.saveUser(socket, user, pass);
 };
 /*

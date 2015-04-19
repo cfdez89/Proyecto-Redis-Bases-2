@@ -23,7 +23,7 @@ module.exports.saveUser = function(socket, username, pass){
 	    } 
 	    else{
 	      	console.log('Saved user into redis database!');
-	      	//socket.emit('sendMsj', message);//se manda lo enviado del front como prueba, se debe hacer un case en el front
+	      	socket.emit('getRes', {username: "desde backend"});
 	    }
 	});
 };
@@ -55,7 +55,7 @@ module.exports.getUser = function(socket, username){
 		    if(++count === len){
 		    	if(users.length !== 0){
 		    		console.log(users);	
-		    	    //socket.emit('sendMsj', users);// se debe hacer el case en el front para poder enviarlo
+		    	    socket.emit('getUser', {total: users});
 		    	}
 		        else{
 		        	console.log('Does not exist in the database');
