@@ -1,33 +1,124 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html ng-app=mensajeApp>
 	<head>
-	  <title>Demo</title>
-	  <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="description" content="">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Prologue by HTML5 UP</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<!-- Dependencias de la aplicacion -->
+		<script src="../assets/js/jquery.min.js"></script>
+		<script src="../assets/js/jquery.scrolly.min.js"></script>
+		<script src="../assets/js/jquery.scrollzer.min.js"></script>
+		<script src="../assets/js/skel.min.js"></script>
+		<script src="../assets/js/skel-layers.min.js"></script>
+		<script src="../assets/js/init.js"></script>
+		<noscript>
+			<link rel="stylesheet" href="../assets/css/skel.css" />
+			<link rel="stylesheet" href="../assets/css/style.css" />
+			<link rel="stylesheet" href="../assets/css/style-wide.css" />
+	    </noscript>
 	</head>
 	<body>
-		<!--Vista de registro-->
-		<div ng-controller="ctlMensajes">
-	  		<h1>Registrarse:</h1>
-	  		<form ng-submit="enviarMensaje()">
-	  			<input type="text" placeholder="User" ng-model="mensaje"></input>
-	  			<input type="password" placeholder="Password" ng-model="password"></input>
-	  			<button type="submit">Agregar</button>
-	  		</form>
-	  		<h1>Digite el nombre del mae a buscar</h1>
-	  		<input type="text" placeholder="Buscar" ng-model="buscar"></input>
-	  		<form ng-submit="getMensaje()">
-	  			<button type="submit">Listar Usuarios</button>
-	  		</form>
-	  		<h1>Lista de Buscados: {{mensajes.length}}</h1>
-	  		<ul>
-		  		<li ng-repeat="mensaje in mensajes">{{mensaje.username}}</li>
-	  		</ul>
-	    </div>
-	 
-	    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.js"></script>
+		<!-- Descripcion de la aplicacion -->
+		<div id="header" class="skel-layers-fixed">
+			<div class="top">
+					<!-- Puede ir la imagen del usuario -->
+					<div id="logo">
+						<h1 id="title">Desconocido</h1>
+						<p>Descripcion</p>
+					</div>
+					<!-- Menu de la aplicacion -->
+					<nav id="nav">
+						<ul>
+							<li><a href="#top" id="top-link" class="skel-layers-ignoreHref"><span class="icon fa-home">opcion1</span></a></li>
+							<li><a href="#portfolio" id="portfolio-link" class="skel-layers-ignoreHref"><span class="icon fa-th">Registrarse</span></a></li>
+							<li><a href="#about" id="about-link" class="skel-layers-ignoreHref"><span class="icon fa-user">opcion3</span></a></li>
+							<li><a href="#contact" id="contact-link" class="skel-layers-ignoreHref"><span class="icon fa-envelope">opcion4</span></a></li>
+						</ul>
+					</nav>		
+			</div>
+		</div>
+		<!-- Secciones de la pagina-->
+		<div id="main">
+        <!-- Opcion1 -->
+			<section id="top" class="one dark cover">
+				<div class="container">
+                    <header>
+						<h2 class="alt">Hola</h2>
+					</header>
+					<footer>
+						<a href="#portfolio" class="button scrolly">Registrarse</a>
+					</footer>
+                </div>
+			</section>
+			<!-- opcion2 -->
+			<section id="portfolio" class="two">
+				<div class="container">
+					<header>
+						<h2>Registrarse</h2>
+					</header>
+					<div ng-controller="ctlMensajes">
+				  		<form ng-submit="enviarMensaje()">
+				  			<input type="text" placeholder="User" ng-model="mensaje"></input>
+				  			<input type="password" placeholder="Password" ng-model="password"></input>
+				  			<button type="submit">Agregar</button>
+				  			<h1>Digite el nombre del mae a buscar</h1>
+				  		    <input type="text" placeholder="Buscar" ng-model="buscar"></input>
+				  		</form>
+				  		<form ng-submit="getMensaje()">
+				  			<button type="submit">Listar Usuarios</button>
+				  		</form>
+				  		<h1>Lista de Buscados: {{mensajes.length}}</h1>
+				  		<ul>
+					  		<li ng-repeat="mensaje in mensajes">{{mensaje.username}}</li>
+				  		</ul>
+				    </div>
+				</div>
+			</section>
+            <!-- opcion3 -->
+			<section id="about" class="three">
+				<div class="container">
+				    <header>
+						<h2>opcion3</h2>
+					</header>
+				</div>
+			</section>
+			<!-- opcion4-->
+			<section id="contact" class="four">
+				<div class="container">
+					<header>
+					    <h2>opcion4</h2>
+					</header>
+       				<p>algo</p>
+					<form method="post" action="#">
+						<div class="row 50%">
+							<div class="6u"><input type="text" name="name" placeholder="Name" /></div>
+							<div class="6u"><input type="text" name="email" placeholder="Email" /></div>
+							</div>
+								<div class="row 50%">
+									<div class="12u">
+										<textarea name="message" placeholder="Message"></textarea>
+								</div>
+							</div>
+								<div class="row">
+								<div class="12u">
+								<input type="submit" value="Send Message" />
+							</div>
+						</div>
+					</form>
+
+				</div>
+			</section>
+		</div>
+		<!-- Footer -->
+		<div id="footer">
+		<!-- Copyright -->
+			<ul class="copyright">
+				<li>&copy; Redis. All rights reserved.</li>
+			</ul>		
+		</div>
+		<!-- Dependencias de la aplicacion -->
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.js"></script>
 	    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-resource.js"></script>   
 	    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> 
 	    <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
