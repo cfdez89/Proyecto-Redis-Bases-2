@@ -1,7 +1,9 @@
 
+var app = angular.module('myApp', ['ngResource', 'ngAnimate'])
 
-
-var app = angular.module('mensajeApp', ['ngResource'])
+/*
+	*Service
+*/
 'use strict';
 app.factory('socket', function ($rootScope) {
   var socket = io.connect();

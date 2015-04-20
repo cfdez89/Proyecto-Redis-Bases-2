@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
-<html ng-app=mensajeApp>
+<html ng-app = myApp>
 	<head>
-		<title>Prologue by HTML5 UP</title>
+		<title>Aplicacion con Redis</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
@@ -12,13 +12,15 @@
 		<script src="../assets/js/skel.min.js"></script>
 		<script src="../assets/js/skel-layers.min.js"></script>
 		<script src="../assets/js/init.js"></script>
+	
 		<noscript>
 			<link rel="stylesheet" href="../assets/css/skel.css" />
 			<link rel="stylesheet" href="../assets/css/style.css" />
 			<link rel="stylesheet" href="../assets/css/style-wide.css" />
+			<link rel="stylesheet" href="../assets/css/style-show.css">
 	    </noscript>
 	</head>
-	<body>
+	<body ng-controller="indexController">
 		<!-- Descripcion de la aplicacion -->
 		<div id="header" class="skel-layers-fixed">
 			<div class="top">
@@ -31,81 +33,81 @@
 					<nav id="nav">
 						<ul>
 							<li><a href="#top" id="top-link" class="skel-layers-ignoreHref"><span class="icon fa-home">opcion1</span></a></li>
-							<li><a href="#portfolio" id="portfolio-link" class="skel-layers-ignoreHref"><span class="icon fa-th">Registrarse</span></a></li>
-							<li><a href="#about" id="about-link" class="skel-layers-ignoreHref"><span class="icon fa-user">opcion3</span></a></li>
-							<li><a href="#contact" id="contact-link" class="skel-layers-ignoreHref"><span class="icon fa-envelope">opcion4</span></a></li>
+							<li><a href="#about" id="about-link" class="skel-layers-ignoreHref"><span class="icon fa-user">opcion2</span></a></li>
 						</ul>
 					</nav>		
 			</div>
 		</div>
 		<!-- Secciones de la pagina-->
 		<div id="main">
-        <!-- Opcion1 -->
+			<div class="container" STYLE="background-color:#1C1C1C" ALIGN=CENTER>
+				<button ng-click= "mostrarRegistro()">Registrarse</button>
+				<button ng-click= "mostrarSesion()">Iniciar Sesion</button>		
+			</div>	
+			<!-- Seccion de registro de usuario-->
+			<section id="contact" class="four" ng-show="verRegistro">
+				<div class="container" >
+					<header>
+					    <h2>Registrarse es gratuito</h2>
+					</header>
+					<div>
+				  		<form ng-submit="registrarUsuario()">
+					  		<input type="text" placeholder="Nombre"     ng-model="modNombre"></input>
+					  		<br><br>
+					  		<input type="text" placeholder="Apellido" ng-model="modApellido"></input>
+					  		<br><br>
+					  		<input type="text" placeholder="Usuario"      ng-model="modUsuario"></input>
+					  		<br><br>
+					  		<input type="text" placeholder="Contraseña"  ng-model="modPassword"></input>
+					  		<br><br>
+					  		<input type="text" placeholder=" Confirmar Contraseña" ng-model="modVerificarPassword"></input>
+					  		<br><br>
+				  			<button type="submit">Aceptar</button>
+				  		</form>
+				    </div>
+				</div>
+			</section>
+			<!-- Seccion de inicio de sesion -->
+			<section id="portfolio" class="two" ng-show="verSesion">
+				<div class="container">
+					<header>
+						<h2>Desea iniciar sesion</h2>
+					</header>
+					<div>
+				  		<form ng-submit="iniciarSesion()">
+				  			<input type="text" placeholder="Usuario"     ng-model="modLoguinUser"></input>
+				  			<br><br>
+				  			<input type="text" placeholder="Contraseña"  ng-model="modLoguinPass"></input>
+				  			<br><br>
+				  			<button type="submit">Aceptar</button>
+				  		</form>
+				    </div>
+				</div>
+			</section>
+            <!-- Opcion1 -->
 			<section id="top" class="one dark cover">
 				<div class="container">
                     <header>
 						<h2 class="alt">Hola</h2>
+						
 					</header>
-					<footer>
-						<a href="#portfolio" class="button scrolly">Registrarse</a>
-					</footer>
                 </div>
-			</section>
-			<!-- opcion2 -->
-			<section id="portfolio" class="two">
-				<div class="container">
-					<header>
-						<h2>Registrarse</h2>
-					</header>
-					<div ng-controller="ctlMensajes">
-				  		<form ng-submit="enviarMensaje()">
-				  			<input type="text" placeholder="User" ng-model="mensaje"></input>
-				  			<input type="password" placeholder="Password" ng-model="password"></input>
-				  			<button type="submit">Agregar</button>
-				  			<h1>Digite el nombre del mae a buscar</h1>
-				  		    <input type="text" placeholder="Buscar" ng-model="buscar"></input>
-				  		</form>
-				  		<form ng-submit="getMensaje()">
-				  			<button type="submit">Listar Usuarios</button>
-				  		</form>
-				  		<h1>Lista de Buscados: {{mensajes.length}}</h1>
-				  		<ul>
-					  		<li ng-repeat="mensaje in mensajes">{{mensaje.username}}</li>
-				  		</ul>
-				    </div>
-				</div>
 			</section>
             <!-- opcion3 -->
 			<section id="about" class="three">
 				<div class="container">
 				    <header>
-						<h2>opcion3</h2>
+						<h2>opcion2</h2>
 					</header>
-				</div>
-			</section>
-			<!-- opcion4-->
-			<section id="contact" class="four">
-				<div class="container">
-					<header>
-					    <h2>opcion4</h2>
-					</header>
-       				<p>algo</p>
-					<form method="post" action="#">
-						<div class="row 50%">
-							<div class="6u"><input type="text" name="name" placeholder="Name" /></div>
-							<div class="6u"><input type="text" name="email" placeholder="Email" /></div>
-							</div>
-								<div class="row 50%">
-									<div class="12u">
-										<textarea name="message" placeholder="Message"></textarea>
-								</div>
-							</div>
-								<div class="row">
-								<div class="12u">
-								<input type="submit" value="Send Message" />
-							</div>
-						</div>
-					</form>
+					<form ng-submit="getMensaje()">
+				  		<h1>Digite el nombre del mae a buscar</h1>
+				  		    <input type="text" placeholder="Buscar" ng-model="buscar"></input>
+				  			<button >Listar Usuarios</button>
+				  			<h1>Lista de Buscados: {{mensajes.length}}</h1>
+					  		<ul>
+						  		<li ng-repeat="mensaje in mensajes">{{mensaje.username}}</li>
+					  		</ul>
+				  		</form>
 
 				</div>
 			</section>
@@ -121,6 +123,7 @@
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.js"></script>
 	    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-resource.js"></script>   
 	    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> 
+	    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-animate.min.js"></script>
 	    <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
         <script type="text/javascript" src="/app.js"></script>
         <script type="text/javascript" src="../controladorescliente/controladores.js"></script>

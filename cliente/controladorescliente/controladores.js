@@ -1,5 +1,12 @@
-app.controller('ctlMensajes', ['$scope', '$http', 'socket', function ($scope, $http, socket){
+/*
+  *Controlador de la pagina
+*/
+app.controller('indexController', ['$scope', '$http', 'socket', function ($scope, $http, socket){
 	$scope.mensajes = [];
+  $scope.verRegistro = false;
+  $scope.verSesion = false;
+  $scope.conectado = false;
+
 	
 	socket.on('getRes', function(message){
     	console.log(message);
@@ -12,18 +19,50 @@ app.controller('ctlMensajes', ['$scope', '$http', 'socket', function ($scope, $h
 
     });	
 
-	$scope.enviarMensaje = function(){
-		socket.emit('CONNECT', {msgType: 'saveUser', msg: $scope.mensaje, msg2: $scope.password});
+	$scope.registrarUsuario = function(){
+		socket.emit('CONNECT', {msgType: 'saveUser', msg: $scope.modUsuario, msg2: $scope.modPassword});
+
+    $scope.modNombre   = '';
+    $scope.modApellido = '';
+    $scope.modUsuario  = '';
+		$scope.modPassword = '';
+    $scope.modVerificarPassword  = '';
 
 
-		$scope.mensaje = '';
-		$scope.password = '';
+    $scope.conectado = true;
+    $scope.verRegistro = !$scope.verRegistro;
+
 
 	};	
+
+  $scope.iniciarSesion = function(){
+    $scope.modLoguinaUser  = '';
+    $scope.modLoguinPass = '';
+
+    $scope.conectado = true;
+    $scope.verSesion = !$scope.verSesion;
+
+
+  };  
+
 
 	$scope.getMensaje = function(){
 		socket.emit('CONNECT', {msgType: 'getUser', msg: $scope.buscar});
 
-	};		
+	};
+
+  $scope.mostrarRegistro = function(){
+    if($scope.conectado != true){
+      $scope.verRegistro = !$scope.verRegistro;
+    }
+  };
+
+  $scope.mostrarSesion = function(){
+    if($scope.conectado != true){
+      $scope.verSesion = !$scope.verSesion;
+    }
+  };	
+  
+  	
 }]);
 
