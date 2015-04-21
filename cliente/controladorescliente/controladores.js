@@ -2,25 +2,30 @@
   *Controlador de la pagina
 */
 app.controller('indexController', ['$scope', '$http', 'socket', function ($scope, $http, socket){
-	$scope.mensajes = [];
+  $scope.mensajes = [];
   $scope.verRegistro = false;
   $scope.verSesion = false;
   $scope.conectado = false;
+  
+  socket.on('ERROR', function(message){
+    console.log(message);
+  });
 
-	
-	socket.on('getRes', function(message){
-    	console.log(message);
-    });	
-    socket.on('getUser', function(message){
-    	var res = [];
-    	for(var i = 0; i < message.total.length; i++){
-    		 $scope.mensajes.push(message.total[i]);
-    	}
-
-    });	
+  socket.on('RESPONSE', function(message){
+    if(message.msgType == 'saveUser'){
+      console.log(message.msg);
+      socket.emit('SOLICITUDE', {msgType: 'connected', msg: message.msg});
+    }
+    if(message.msgType == 'getUser'){
+      var res = [];
+      for(var i = 0; i < message.msg.length; i++){
+        $scope.mensajes.push(message.msg[i]);
+      }
+    }
+  });
 
 	$scope.registrarUsuario = function(){
-		socket.emit('CONNECT', {msgType: 'saveUser', msg: $scope.modUsuario, msg2: $scope.modPassword});
+		socket.emit('SOLICITUDE', {msgType: 'saveUser', msg: $scope.modUsuario, msg2: $scope.modPassword});
 
     $scope.modNombre   = '';
     $scope.modApellido = '';
@@ -47,7 +52,7 @@ app.controller('indexController', ['$scope', '$http', 'socket', function ($scope
 
 
 	$scope.getMensaje = function(){
-		socket.emit('CONNECT', {msgType: 'getUser', msg: $scope.buscar});
+		socket.emit('SOLICITUDE', {msgType: 'getUser', msg: $scope.buscar});
 
 	};
 

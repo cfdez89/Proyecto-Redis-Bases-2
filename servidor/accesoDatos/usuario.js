@@ -17,13 +17,15 @@ module.exports.saveUser = function(socket, username, pass){
 	user.save(function(err){
 	    if(err === 'invalid'){
 	    	console.log('Properties were invalid: ', user.errors);
+	    	socket.emit('ERROR', {type: "Username are invalid"});
 	    } 
 	    else if(err){
 	        console.log(err); 
+	        socket.emit('ERROR', {type: "Database connexion refused"});
 	    } 
 	    else{
 	      	console.log('Saved user into redis database!');
-	      	socket.emit('getRes', {username: "desde backend"});
+	      	socket.emit('RESPONSE', {msgType: 'saveUser', msg: username});
 	    }
 	});
 };
@@ -55,10 +57,11 @@ module.exports.getUser = function(socket, username){
 		    if(++count === len){
 		    	if(users.length !== 0){
 		    		console.log(users);	
-		    	    socket.emit('getUser', {total: users});
+		    	    socket.emit('RESPONSE', {msgType: 'getUser', msg: users});
 		    	}
 		        else{
 		        	console.log('Does not exist in the database');
+		        	socket.emit('ERROR', {type: "Does not exist in the database"});
 		        }
 	    	}
 	      });
