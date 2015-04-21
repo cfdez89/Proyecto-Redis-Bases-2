@@ -23,12 +23,16 @@ app.use('/', express.static(__dirname + '/cliente/'));
 server.listen(3000, function(){
 	console.log('Listening at port 3000...');
 })
-
+//lista de clientes conectados
+clients = [];
 //manejo de los clientes y sus peticiones
-io.sockets.on('connection', function(socket){// falta pulir la conexion para q recibe un objeto generico
-	console.log('Now are Connected');
-	socket.on('CONNECT', function(data){
-		var message = data;
+io.sockets.on('connection', function(socket){	
+	socket.on('SOLICITUDE', function(message){
+
+		if(message.msgType == 'connected'){
+           clients.push(message.msg);
+           socket.username = message.msg;
+        }
         if(message.msgType == 'saveUser'){
             controller.addUser(socket, message);
         }
@@ -38,6 +42,12 @@ io.sockets.on('connection', function(socket){// falta pulir la conexion para q r
 	});
 	
 	socket.on('disconnect', function(code, reason){
-		console.log('Now are disconnect');
+		if(!socket.username){
+			return;
+		}
+		if(clients.indexOf(socket.username) > -1){
+			clients.splice(clients.indexOf(socket.username), 1);
+		}
+		console.log('Online username are:' + clients);
 	});	
 });
