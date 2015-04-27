@@ -1,13 +1,10 @@
-var nohm  = require('nohm').Nohm,
-	user  = require('../modelos/modelos'),
-	redis = require('redis').createClient(),
-	db    = require('./conexion');
+var nohm             = require('nohm').Nohm,
+	user             = require('../modelos/modelos'),
+	commentHystory   = require('../modelos/historiaMensajes'),
+	redis            = require('redis').createClient(),
+	db               = require('./conexion');
 
-
-
-/*
-	*Save new user into database
-*/
+//guardar un nuevo usuario en la bd
 module.exports.saveUser = function(socket, username, pass){
 	redis.select(db.database());
 	nohm.setClient(redis);
@@ -17,29 +14,28 @@ module.exports.saveUser = function(socket, username, pass){
 	user.save(function(err){
 	    if(err === 'invalid'){
 	    	console.log('Properties were invalid: ', user.errors);
-	    	socket.emit('ERROR', {type: "Username are invalid"});
+	    	socket.emit('ERROR', {msg: "Username are invalid"});
 	    } 
 	    else if(err){
 	        console.log(err); 
-	        socket.emit('ERROR', {type: "Database connexion refused"});
+	        socket.emit('ERROR', {msg: "Database connexion refused"});
 	    } 
 	    else{
 	      	console.log('Saved user into redis database!');
-	      	socket.emit('RESPONSE', {msgType: 'saveUser', msg: username});
+	      	var message = {msgType: 'SAVE_USER', msg: 'Ha sido registrado de forma exitosa'}
+	      	socket.emit('RESPONSE', message);
 	    }
 	});
 };
-/*
-	*Get user from database
-*/
-module.exports.getUser = function(socket, username){
+//validar usuario en la bd
+module.exports.logIn = function(socket, username, pass){
 	redis.select(db.database());
 	nohm.setClient(redis);
 	user.find(function(err, ids){
 	    if(err){
 	    	return next(err);
 	    }
-	    var users = [];
+	    var validUser = false;
 	    var len = ids.length;
 	    var count = 0;
 	    if(len === 0){
@@ -51,20 +47,78 @@ module.exports.getUser = function(socket, username){
 		    if(err){
 		        return next(err);
 		    }
-		    if(props.username === username){
-		        users.push({id: this.id, username: props.username, password: props.password});
+		    if((props.username === username) && (props.password === pass)){
+		        validUser = true;
 		    }  
 		    if(++count === len){
-		    	if(users.length !== 0){
-		    		console.log(users);	
-		    	    socket.emit('RESPONSE', {msgType: 'getUser', msg: users});
+		    	if(validUser === true){
+		    	    socket.emit('RESPONSE', {msgType: 'LOG_IN', msg: username});
 		    	}
 		        else{
-		        	console.log('Does not exist in the database');
-		        	socket.emit('ERROR', {type: "Does not exist in the database"});
+		        	socket.emit('ERROR', {msg: "El usuario no esta regitrado!"});
 		        }
 	    	}
 	      });
 	    });
     });
 };
+//obtner la historia de mensajes de la bd
+module.exports.historyMessages = function(socket, username){
+	redis.select(db.database());
+	nohm.setClient(redis);
+	commentHystory.find(function(err, ids){
+	    if(err){
+	    	return next(err);
+	    }
+	    var allComments = [];
+	    var len = ids.length;
+	    var count = 0;
+	    if(len === 0){
+	      console.log(len);
+	    }
+	    ids.forEach(function(id){
+	    var commentsFind = nohm.factory('Message');
+	    commentsFind.load(id, function(err, props){
+		    if(err){
+		        return next(err);
+		    }
+		    if(props.receptor === username){
+		        allComments.push({emisor: props.emisor, texto: props.comment});
+		    }  
+		    if(++count === len){
+		    	if(allComments.length !== 0){
+		    	    socket.emit('RESPONSE', {msgType: 'HISTORY_MESSAGES', msg: allComments});
+		    	}
+		        else{
+		        	console.log('Does not exist comments  in the database for this user');
+		        }
+	    	}
+	      });
+	    });
+    });
+};
+//guardar un nuevo mensaje en la bd
+module.exports.saveMessage = function(emisor, receptors, comment){
+
+	for(var i = 0; i < receptors.length; i++){
+		redis.select(db.database());
+		nohm.setClient(redis);
+		var message = nohm.factory('Message');
+		message.p({ comment: comment, receptor: receptors[i], emisor: emisor});
+
+		message.save(function(err){
+		    if(err === 'invalid'){
+		    	console.log('Properties were invalid: ', message.errors);
+		    	socket.emit('ERROR', {msg: "Comment are invalid"});
+		    } 
+		    else if(err){
+		        console.log(err); 
+		        socket.emit('ERROR', {msg: "Database connexion refused"});
+		    } 
+		    else{
+		      	console.log('Saved comment into redis database!');
+		    }
+		});
+	}
+};
+

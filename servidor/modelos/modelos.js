@@ -1,5 +1,5 @@
 var nohm = require('nohm').Nohm;
-  
+//modelo usuario  
 module.exports = nohm.model('User', {
     properties:{
     	username:{
@@ -11,5 +11,6 @@ module.exports = nohm.model('User', {
       }
     }
 });
+
 
 
