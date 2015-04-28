@@ -21,17 +21,27 @@ module.exports.logIn = function(socket, message){
 	}
 	dataAccess.logIn(socket, user, pass);
 };
+
+//obtener la historia de mensajes
+module.exports.allNotes = function(socket){
+	dataAccess.historyNotes(socket);
+};
+
+
 //obtener la historia de mensajes
 module.exports.allMessages = function(socket, message){
 	var user = message.msg;
 	dataAccess.historyMessages(socket, user);
 };
-/*
-	*Get user from dataaccess
-*/
-module.exports.getUser = function(socket, message){
-	var user = message.msg;
-	dataAccess.getUser(socket, user);
+//enviar el mensaje a la capa de acceso a datos
+module.exports.sendNote = function(socket, message){
+	var autor;
+	var texto;
+	for(var i = 0; i < message.msg.length; i++){
+		autor = message.msg[i].autor;
+	    texto = message.msg[i].texto;
+	}
+	dataAccess.saveNote(socket, autor, texto);
 };
 /*
 	*Send message from dataaccess

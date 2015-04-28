@@ -5,10 +5,10 @@ module.exports = nohm.model('Message', {
     	comment:{
         type: 'string'
       },
-      receptor: {
+      receptor:{
         type: 'string'
       },
-      emisor: {
+      emisor:{
         type: 'string'
       }
     }

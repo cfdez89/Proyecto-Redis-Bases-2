@@ -1,6 +1,7 @@
 var nohm             = require('nohm').Nohm,
 	user             = require('../modelos/modelos'),
 	commentHystory   = require('../modelos/historiaMensajes'),
+	noteHistory      = require('../modelos/nota'),
 	redis            = require('redis').createClient(),
 	db               = require('./conexion');
 
@@ -122,3 +123,61 @@ module.exports.saveMessage = function(emisor, receptors, comment){
 	}
 };
 
+//guardar un nueva nota en la bd
+module.exports.saveNote = function(socket, user, description){
+	redis.select(db.database());
+	nohm.setClient(redis);
+	var note = nohm.factory('Note');
+	note.p({ autor: user, note: description});
+
+	note.save(function(err){
+	    if(err === 'invalid'){
+	    	console.log('Properties were invalid: ', note.errors);
+	    	socket.emit('ERROR', {msg: "Note are invalid"});
+	    } 
+	    else if(err){
+	        console.log(err); 
+	        socket.emit('ERROR', {msg: "Database connexion refused"});
+	    } 
+	    else{
+	    	console.log(note);
+	      	console.log('Saved note into redis database!');
+	    }
+	});
+};
+
+//obtner la historia de notas de la bd
+module.exports.historyNotes = function(socket){
+	redis.select(db.database());
+	nohm.setClient(redis);
+	noteHistory.find(function(err, ids){
+	    if(err){
+	    	return next(err);
+	    }
+	    var allNotes = [];
+	    var len = ids.length;
+	    var count = 0;
+	    if(len === 0){
+	      console.log(len);
+	    }
+	    ids.forEach(function(id){
+	    var notesFind = nohm.factory('Note');
+	    notesFind.load(id, function(err, props){
+		    if(err){
+		        return next(err);
+		    }
+		    if(props.done === false){
+		        allNotes.push({autor: props.autor, texto: props.note}); 
+		    }
+		    if(++count === len){
+		    	if(allNotes.length !== 0){
+		    	    socket.emit('RESPONSE', {msgType: 'HISTORY_NOTES', msg: allNotes});
+		    	}
+		        else{
+		        	console.log('Does not exist notes in the database for this user');
+		        }
+	    	}
+	      });
+	    });
+    });
+};

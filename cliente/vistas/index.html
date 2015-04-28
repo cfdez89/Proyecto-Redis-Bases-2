@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html ng-app = myApp>
 	<head>
-		<title>Aplicacion con Redis</title>
+		<title>TO DO LIST</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
@@ -12,7 +12,7 @@
 		<script src="../assets/js/skel.min.js"></script>
 		<script src="../assets/js/skel-layers.min.js"></script>
 		<script src="../assets/js/init.js"></script>
-	
+		<link rel="stylesheet" href="../assets/css/listo.css" />
 		<noscript>
 			<link rel="stylesheet" href="../assets/css/skel.css" />
 			<link rel="stylesheet" href="../assets/css/style.css" />
@@ -59,9 +59,9 @@
 				  		<form ng-submit="registrarUsuario()">
 					  		<input type="text" placeholder="Usuario"      ng-model="modUsuario" required></input>
 					  		<br><br>
-					  		<input type="text" placeholder="Contraseña"  ng-model="modPassword" required></input>
+					  		<input type="password" placeholder="Contraseña"  ng-model="modPassword" required></input>
 					  		<br><br>
-					  		<input type="text" placeholder=" Confirmar Contraseña" ng-model="modVerPassword" required></input>
+					  		<input type="password" placeholder=" Confirmar Contraseña" ng-model="modVerPassword" required></input>
 					  		<br><br>
 				  			<button type="submit">Aceptar</button>
 				  		</form>
@@ -97,21 +97,44 @@
 
 				</div>
 			</section>
+			<!-- Seccion de presentacion-->
+			<section id="about" class="three" ng-show="verPortada">
+				<div class="container">
+				    <header>
+						<h2 class="alt">TO DO LIST</h2>	
+					</header>
+					<form >
+						<IMG SRC="../assets/images/notas.png" BORDER=0>
+						<h2 class="alt">WELCOME TO THE BEST NOTES APP FOR STUDENTS!!!</h2>	
+						<h2 class="alt">CONNECT WITH YOUR FRIENDS NOW!!</h2>	
+				    </form>
+				</div>
+			</section>
             <!-- Seccion principal del programa-->
-			<section id="top" class="one dark cover">
+			<section id="top" class="one dark cover" ng-show="verInicio">
 				<div class="container">
                     <header>
-						<h2 class="alt">Hola</h2>
-
-
-						
+						<h2 class="alt">Crea una nueva nota</h2>
 					</header>
-
+					<div>
+						<span>Existen {{tareaPendientes()}} de {{listaTareas.length}} pendientes !</span>
+						<ul class="unstyled">
+						    <li ALIGN=LEFT ng-repeat="tareas in listaTareas">
+						    	<input ng-click="actualizarTareas($index)" type="checkbox" ng-model="tareas.done" required>
+						        <span class="done-{{tareas.done}}">{{tareas.texto}} (por {{tareas.autor}})</span>
+						    </li>
+						</ul>
+				    </div>
+					<form ng-submit="agregarTarea()">
+					    <input type="text" placeholder="Escriba la nueva tarea..." ng-model="modTarea"></input>
+						<button type="submit">Nueva Tarea</button>
+				    </form>
+				    <br><br>
 					<form ng-submit="enviarMensaje()">
 						<h2 class="alt">Chat</h2>
 						<textarea readonly type="text" ng-model="mensajesChat"></textarea>
 						<br><br>
-						<input type="text" placeholder="Escriba el mensaje..." ng-model="modMensajeEnviar"></input>
+						<input type="text" placeholder="Escriba el mensaje..." ng-model="modMensajeEnviar" required></input>
 						<button type="submit">Enviar Mensaje</button>
 				    </form>
                 </div>

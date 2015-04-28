@@ -6,7 +6,9 @@ var express       = require("express"),
     bodyParser    = require('body-parser'),
     controller    = require('./servidor/controladores/controladores.js'),
     io            = require('socket.io').listen(server);  
-
+//Variablees globales
+//lista de clientes conectados
+PLAYERS = [];
 
 app.use(bodyParser.urlencoded({ 
 	extended: false 
@@ -20,24 +22,38 @@ app.get('/', function(req, res){
 
 app.use('/', express.static(__dirname + '/cliente/'));
 
-server.listen(3000, function(){
-	console.log('Listening at port 3000...');
+server.listen(process.env.PORT || 8080, function(){
+	console.log('Listening at port 8080...');
 })
-//lista de clientes conectados
-clients = [];
-//manejo de los clientes y sus peticiones
+
+//manejo de peticiones por parte de los clientes
 io.sockets.on('connection', function(socket){	
 	socket.on('SOLICITUDE', function(message){
 
-		if(message.msgType == 'connected'){
-           clients.push(message.msg);
+		if(message.msgType == 'CONNECTED'){
+           PLAYERS.push(message.msg);
            socket.username = message.msg;
+           console.log('Online username are:' + PLAYERS);
+           io.sockets.emit('RESPONSE', {msgType: 'ONLINE_USER', msg: PLAYERS});       
         }
-        if(message.msgType == 'saveUser'){
-            controller.addUser(socket, message);
+        if(message.msgType == 'SAVE_USER'){
+            controller.saveUser(socket, message);
         }
-        if(message.msgType == 'getUser'){
-           controller.getUser(socket, message);
+        if(message.msgType == 'LOG_IN'){
+           controller.logIn(socket, message);
+        }
+        if(message.msgType == 'SEND_MESSAGE'){
+           controller.sendMessage(socket, message, PLAYERS);
+        }
+        if(message.msgType == 'SEND_NOTE'){
+           controller.sendNote(socket, message);
+           io.sockets.emit('RESPONSE', message);       
+        }
+        if(message.msgType == 'HISTORY_MESSAGES'){
+           controller.allMessages(socket, message);
+        }
+        if(message.msgType == 'HISTORY_NOTES'){
+           controller.allNotes(socket);
         }
 	});
 	
@@ -45,9 +61,16 @@ io.sockets.on('connection', function(socket){
 		if(!socket.username){
 			return;
 		}
-		if(clients.indexOf(socket.username) > -1){
-			clients.splice(clients.indexOf(socket.username), 1);
+		if(PLAYERS.indexOf(socket.username) > -1){
+			PLAYERS.splice(PLAYERS.indexOf(socket.username), 1);
 		}
-		console.log('Online username are:' + clients);
+		if(PLAYERS.length === 0){
+			console.log('Nadie esta conectado!');	
+		}
+		else{
+			console.log('Online username are:' + PLAYERS);
+		}
+		io.sockets.emit('RESPONSE', {msgType: 'ONLINE_USER', msg: PLAYERS});  
+	
 	});	
 });
